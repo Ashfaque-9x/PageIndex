@@ -1,5 +1,4 @@
 import tiktoken
-import openai
 import logging
 import os
 from datetime import datetime
