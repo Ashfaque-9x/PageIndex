@@ -1,5 +1,6 @@
 import tiktoken
 import logging
+from litellm import completion, acompletion
 import os
 from datetime import datetime
 import time
