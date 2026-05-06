@@ -26,36 +26,23 @@ def count_tokens(text, model=None):
     tokens = enc.encode(text)
     return len(tokens)
 
-def ChatGPT_API_with_finish_reason(model, prompt, api_key=CHATGPT_API_KEY, chat_history=None):
-    max_retries = 10
-    client = openai.OpenAI(api_key=api_key)
-    for i in range(max_retries):
-        try:
-            if chat_history:
-                messages = chat_history
-                messages.append({"role": "user", "content": prompt})
-            else:
-                messages = [{"role": "user", "content": prompt}]
-            
-            response = client.chat.completions.create(
-                model=model,
-                messages=messages,
-                temperature=0,
-            )
-            if response.choices[0].finish_reason == "length":
-                return response.choices[0].message.content, "max_output_reached"
-            else:
-                return response.choices[0].message.content, "finished"
+def ChatGPT_API_with_finish_reason(model, prompt, chat_history=None):
+    messages = chat_history[:] if chat_history else []
+    messages.append({"role": "user", "content": prompt})
 
-        except Exception as e:
-            print('************* Retrying *************')
-            logging.error(f"Error: {e}")
-            if i < max_retries - 1:
-                time.sleep(1)  # Wait for 1秒 before retrying
-            else:
-                logging.error('Max retries reached for prompt: ' + prompt)
-                return "Error"
+    response = completion(
+        model=model,
+        messages=messages,
+        api_base=os.getenv("OPENAI_BASE_URL"),
+        api_key="ollama"
+    )
 
+    finish_reason = response["choices"][0]["finish_reason"]
+    content = response["choices"][0]["message"]["content"]
+
+    if finish_reason == "length":
+        return content, "max_output_reached"
+    return content, "finished"
 
 def ChatGPT_API(model, prompt, chat_history=None):
     messages = chat_history[:] if chat_history else []
