@@ -57,55 +57,31 @@ def ChatGPT_API_with_finish_reason(model, prompt, api_key=CHATGPT_API_KEY, chat_
                 return "Error"
 
 
+def ChatGPT_API(model, prompt, chat_history=None):
+    messages = chat_history[:] if chat_history else []
+    messages.append({"role": "user", "content": prompt})
 
-def ChatGPT_API(model, prompt, api_key=CHATGPT_API_KEY, chat_history=None):
-    max_retries = 10
-    client = openai.OpenAI(api_key=api_key)
-    for i in range(max_retries):
-        try:
-            if chat_history:
-                messages = chat_history
-                messages.append({"role": "user", "content": prompt})
-            else:
-                messages = [{"role": "user", "content": prompt}]
-            
-            response = client.chat.completions.create(
-                model=model,
-                messages=messages,
-                temperature=0,
-            )
-   
-            return response.choices[0].message.content
-        except Exception as e:
-            print('************* Retrying *************')
-            logging.error(f"Error: {e}")
-            if i < max_retries - 1:
-                time.sleep(1)  # Wait for 1秒 before retrying
-            else:
-                logging.error('Max retries reached for prompt: ' + prompt)
-                return "Error"
+    response = completion(
+        model=model,
+        messages=messages,
+        api_base=os.getenv("OPENAI_BASE_URL"),
+        api_key="ollama"
+    )
+
+    return response["choices"][0]["message"]["content"]
             
 
-async def ChatGPT_API_async(model, prompt, api_key=CHATGPT_API_KEY):
-    max_retries = 10
+async def ChatGPT_API_async(model, prompt):
     messages = [{"role": "user", "content": prompt}]
-    for i in range(max_retries):
-        try:
-            async with openai.AsyncOpenAI(api_key=api_key) as client:
-                response = await client.chat.completions.create(
-                    model=model,
-                    messages=messages,
-                    temperature=0,
-                )
-                return response.choices[0].message.content
-        except Exception as e:
-            print('************* Retrying *************')
-            logging.error(f"Error: {e}")
-            if i < max_retries - 1:
-                await asyncio.sleep(1)  # Wait for 1s before retrying
-            else:
-                logging.error('Max retries reached for prompt: ' + prompt)
-                return "Error"  
+
+    response = await acompletion(
+        model=model,
+        messages=messages,
+        api_base=os.getenv("OPENAI_BASE_URL"),
+        api_key="ollama"
+    )
+
+    return response["choices"][0]["message"]["content"]
             
             
 def get_json_content(response):
