@@ -33,7 +33,7 @@ def ChatGPT_API_with_finish_reason(model, prompt, chat_history=None):
     response = completion(
         model=model,
         messages=messages,
-        api_base=os.getenv("OPENAI_BASE_URL"),
+        api_base=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
         api_key="ollama"
     )
 
