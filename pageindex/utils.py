@@ -34,7 +34,7 @@ def ChatGPT_API_with_finish_reason(model, prompt, chat_history=None):
         model=model,
         messages=messages,
         api_base=os.getenv("OLLAMA_BASE_URL"),
-        api_key="ollama"
+        api_key="ollama",
         timeout=1200
     )
 
