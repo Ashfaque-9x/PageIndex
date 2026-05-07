@@ -33,8 +33,9 @@ def ChatGPT_API_with_finish_reason(model, prompt, chat_history=None):
     response = completion(
         model=model,
         messages=messages,
-        api_base=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+        api_base=os.getenv("OLLAMA_BASE_URL"),
         api_key="ollama"
+        timeout=1200
     )
 
     finish_reason = response["choices"][0]["finish_reason"]
