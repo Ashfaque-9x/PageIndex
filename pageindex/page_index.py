@@ -330,7 +330,7 @@ def toc_transformer(toc_content, model=None):
 
 
 
-def find_toc_pages(start_page_index, page_list, opt, logger=None):
+def find_toc_pages(start_page_index=0, page_list, opt, logger=None):
     print('start find_toc_pages')
     last_page_is_yes = False
     toc_page_list = []
