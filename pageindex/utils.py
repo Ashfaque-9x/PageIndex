@@ -507,7 +507,7 @@ def remove_structure_text(data):
 def check_token_limit(structure, limit=110000):
     list = structure_to_list(structure)
     for node in list:
-        num_tokens = count_tokens(node['text'], model='gpt-4o')
+        num_tokens = count_tokens(node['text'], model=model)
         if num_tokens > limit:
             print(f"Node ID: {node['node_id']} has {num_tokens} tokens")
             print("Start Index:", node['start_index'])
