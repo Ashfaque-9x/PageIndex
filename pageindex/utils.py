@@ -22,7 +22,14 @@ CHATGPT_API_KEY = os.getenv("CHATGPT_API_KEY")
 def count_tokens(text, model=None):
     if not text:
         return 0
-    enc = tiktoken.encoding_for_model(model)
+
+    try:
+        # OpenAI-compatible models
+        enc = tiktoken.encoding_for_model(model)
+    except KeyError:
+        # Fallback for Ollama/local models
+        enc = tiktoken.get_encoding("cl100k_base")
+
     tokens = enc.encode(text)
     return len(tokens)
 
