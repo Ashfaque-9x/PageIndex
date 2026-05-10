@@ -652,6 +652,13 @@ def format_structure(structure, order=None):
     return structure
 
 
+def get_tokenizer(model=None):
+    try:
+        return tiktoken.encoding_for_model(model)
+    except:
+        return tiktoken.get_encoding("cl100k_base")
+
+
 class ConfigLoader:
     def __init__(self, default_path: str = None):
         if default_path is None:
